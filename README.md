@@ -19,7 +19,7 @@ The Zephyr Dom0 `zephyr-dom0-xt` provides following guest domain configurations:
 
 - **rpi_5_domd**: The Xen guest domain configuration which uses real RPI5 GPIO HW
   ``/soc/gpio@7d517c00``. It's based on Zephyr Blinky sample.
-- **rpi_5_domu**: The Xen guest domain configuration which is starts Xen guest domain without
+- **rpi_5_domu**: The Xen guest domain configuration that starts Xen guest domain without
   using real RPI5 HW. It's based on Zephyr samples/synchronization sample.
 - **helloworld_xen-arm64**: The Xen guest domain configuration without using real RPI5 HW
   which starts Unikraft kernel. It is based on "Unikraft helloworld" and "monkey" examples.
@@ -144,10 +144,10 @@ moulin rpi5.yaml
 ninja
 ```
 
-The build process generates two images:
+The build process can generates two images:
 
-* SD-card image to be used for boot and by the Zephyr Dom0 `zephyr-dom0-xt` application;
-* USB-flash image to be used as **rootfs** by Linux operated driver domain.
+* **(a)** SD-card image to be used for boot and by the Zephyr Dom0 `zephyr-dom0-xt` application;
+* **(b)** USB-flash image to be used as **rootfs** by Linux operated driver domain.
 
 For build system with rootfs domd on nvme storage:
 
@@ -156,7 +156,7 @@ moulin rpi5.yaml --DOMD_ROOT nvme
 ninja
 ```
 
-## Create SD-card image
+## (a) Create SD-card image
 
 ```
 ninja full.img
@@ -255,7 +255,7 @@ dom0/helloworld_xen-arm64 //Xen-Troops: kernel image for **helloworld_xen-arm64*
 dom0/liunx-pv-image //Xen-Troops: kernel image for **linux_pv_domu** guest domain configuration
 ```
 
-## Create DomD rootfs image
+## (b) Create DomD rootfs image
 
 ```
 ninja rootfs.img
@@ -299,7 +299,7 @@ for example with `fdisk` command, before writing **"ext4"** image.
 The USB-flash image content is the RPI 5 Linux rootfs based on RPI5 bsp yocto build
 [meta-raspberrypi](https://git.yoctoproject.org/meta-raspberrypi) with Xen tools enabled.
 
-### Flash rootfs image to the nvme storage
+## Flash rootfs image to the nvme storage
 
 * Create Sd-card with official Ubuntu from Raspberry foundation.
 * Copy file yocto/build-domd/tmp/deploy/images/raspberrypi5/rpi5-image-xt-domd-raspberrypi5.rootfs.ext4 to the USB-Flash dongle.
@@ -883,6 +883,14 @@ ip a
 ip addr add dev enX0 192.168.0.2/24
 ping -c 3 192.168.0.1
 ```
+
+**NOTE:** if ping to 192.168.0.1 is not working, but everything is ok with ping to localhost (127.0.0.1) 
+then it is required to add interface to the bridge from rpi_5_domd:
+```
+brctl addif xenbr0 eth0
+brctl addif xenbr0 vif8.0
+```
+
 Output should be the following:
 ```
 
