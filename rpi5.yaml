@@ -428,3 +428,24 @@ parameters:
                   "%{SOC_FAMILY}-%{MACHINE}-can-%{DOMD_CAN_TYPE}.dtbo": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/%{SOC_FAMILY}-%{MACHINE}-can-%{DOMD_CAN_TYPE}.dtbo"
     no:
       default: true
+
+  ENABLE_HDMI:
+    desc: "Allow HDMI in DomD"
+    yes:
+      overrides:
+        components:
+          domd:
+            builder:
+              conf:
+                - [MACHINE_FEATURES:append, " domd_hdmi"]
+                - [DOMD_OVERLAYS:append, " %{SOC_FAMILY}-%{MACHINE}-hdmi.dtbo"]
+              target_images:
+                - "tmp/deploy/images/%{MACHINE}/%{SOC_FAMILY}-%{MACHINE}-hdmi.dtbo"
+        images:
+          full:
+            partitions:
+              boot:
+                items:
+                  "%{SOC_FAMILY}-%{MACHINE}-can-%{DOMD_CAN_TYPE}.dtbo": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/%{SOC_FAMILY}-%{MACHINE}-hdmi.dtbo"
+    no:
+      default: true
